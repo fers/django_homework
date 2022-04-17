@@ -22,9 +22,22 @@ DATA = {
 # Напишите ваш обработчик. Используйте DATA как источник данных
 # Результат - render(request, 'calculator/index.html', context)
 # В качестве контекста должен быть передан словарь с рецептом:
-# context = {
-#   'recipe': {
-#     'ингредиент1': количество1,
-#     'ингредиент2': количество2,
-#   }
-# }
+
+
+def get_reciept(request, dish):
+
+    # получаем рецепт конкретного блюда из словаря по параметру переденному через URL
+    dish_description = DATA[dish]
+
+    # получаем количество порций из параметра запроса
+    servings = int(request.GET.get('servings', 1))
+
+    # пересчитываем сколько в итоге на все блюдо нам понадобится инградиентов
+    for x in dish_description:
+        dish_description[x] = dish_description[x] * servings
+
+    # заполняем контекст нпересчитанным словарем
+    context = {
+        'recipe': dish_description
+    }
+    return render(request, 'calculator/index.html', context)
